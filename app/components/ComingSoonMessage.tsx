@@ -15,6 +15,7 @@ export function ComingSoonMessage() {
           </div>
           <div className="flex-1">
             <h2 className="text-lg font-medium mb-1 text-[var(--app-foreground)]">Coming Soon</h2>
+            <p className="text-sm text-[var(--app-foreground-muted)]">Exciting new features are in development and will be available soon.</p>
         
     
             {expanded && (

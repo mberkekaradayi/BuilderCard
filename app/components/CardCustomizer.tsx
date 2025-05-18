@@ -39,6 +39,13 @@ export const CARD_THEMES = [
       primary: "#111827",
       accent: "#111827"
     }
+  },
+  {
+    name: "Turquoise",
+    colors: {
+      primary: "#00B5AD",
+      accent: "#00B5AD"
+    }
   }
 ];
 
@@ -99,13 +106,13 @@ export function CardCustomizer({
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <div className="text-xs font-medium text-[var(--app-foreground-muted)] mb-2">Choose Theme</div>
-                <div className="grid grid-cols-5 gap-2">
+                <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
                   {CARD_THEMES.map((theme) => (
                     <button
                       key={theme.name}
                       type="button"
                       onClick={() => onThemeChange(theme)}
-                      className={`h-8 rounded-md transition-colors border-2 ${
+                      className={`h-10 sm:h-8 rounded-md transition-colors border-2 ${
                         currentTheme.name === theme.name ? "border-white" : "border-transparent"
                       }`}
                       style={{ backgroundColor: theme.colors.primary }}
@@ -117,13 +124,13 @@ export function CardCustomizer({
               
               <div>
                 <div className="text-xs font-medium text-[var(--app-foreground-muted)] mb-2">Choose Emoji</div>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap sm:grid sm:grid-cols-5 sm:grid-rows-2 gap-3 sm:gap-4">
                   {EMOJIS.map((emoji) => (
                     <button
                       key={emoji}
                       type="button"
                       onClick={() => onEmojiChange(emoji)}
-                      className={`w-8 h-8 text-lg flex items-center justify-center rounded-md transition-colors ${
+                      className={`w-11  h-11 sm:w-12 sm:h-12 text-lg sm:text-xl flex items-center justify-center rounded-md transition-colors ${
                         currentEmoji === emoji 
                           ? "text-white border-2 border-white" 
                           : "bg-[var(--app-gray)] hover:bg-[var(--app-gray-dark)]"
