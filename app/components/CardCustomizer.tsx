@@ -1,0 +1,144 @@
+"use client";
+
+import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+
+const EMOJIS = ["🛠️", "🚀", "💙", "⚡", "🔥", "💻", "🏗️", "🧠", "🧩", "✨"];
+
+export const CARD_THEMES = [
+  { 
+    name: "Base Blue",
+    colors: {
+      primary: "#0052FF",
+      accent: "#0052FF"
+    }
+  },
+  { 
+    name: "Neon Green",
+    colors: {
+      primary: "#00FF85", 
+      accent: "#00FF85"
+    }
+  },
+  { 
+    name: "Cosmic Purple",
+    colors: {
+      primary: "#6E46E5",
+      accent: "#6E46E5" 
+    }
+  },
+  { 
+    name: "Sunset Orange",
+    colors: {
+      primary: "#FF5A00",
+      accent: "#FF5A00"
+    }
+  },
+  { 
+    name: "Midnight Black",
+    colors: {
+      primary: "#111827",
+      accent: "#111827"
+    }
+  }
+];
+
+export type Theme = typeof CARD_THEMES[0];
+
+type CardCustomizerProps = {
+  currentTheme: Theme;
+  onThemeChange: (theme: Theme) => void;
+  currentEmoji: string;
+  onEmojiChange: (emoji: string) => void;
+  isOpen: boolean;
+  onToggle: () => void;
+};
+
+export function CardCustomizer({
+  currentTheme,
+  onThemeChange,
+  currentEmoji,
+  onEmojiChange,
+  isOpen,
+  onToggle
+}: CardCustomizerProps) {
+  return (
+    <div className="bg-[var(--app-card-bg)] backdrop-blur-md rounded-xl shadow-lg border border-[var(--app-card-border)] overflow-hidden">
+      <div className="px-4 py-3 border-b border-[var(--app-card-border)] flex items-center justify-between cursor-pointer" onClick={onToggle}>
+        <div className="flex items-center">
+          <h4 className="text-sm font-medium text-[var(--app-foreground)]">Customize Your Card</h4>
+          {!isOpen && (
+            <div className="flex items-center ml-2">
+              <div 
+                className="w-4 h-4 rounded-full mr-1"
+                style={{ backgroundColor: currentTheme.colors.primary }}
+              ></div>
+              <div 
+                className="text-sm"
+              >
+                {currentEmoji}
+              </div>
+            </div>
+          )}
+        </div>
+        <div className="flex items-center">
+          {isOpen ? (
+            <FaChevronUp className="text-[var(--app-foreground-muted)]" size={14} />
+          ) : (
+            <FaChevronDown className="text-[var(--app-foreground-muted)]" size={14} />
+          )}
+        </div>
+      </div>
+      
+      {isOpen && (
+        <div className="p-4">
+          <div className="flex flex-col space-y-4">
+            <div className="flex items-center justify-end">
+           
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <div className="text-xs font-medium text-[var(--app-foreground-muted)] mb-2">Choose Theme</div>
+                <div className="grid grid-cols-5 gap-2">
+                  {CARD_THEMES.map((theme) => (
+                    <button
+                      key={theme.name}
+                      type="button"
+                      onClick={() => onThemeChange(theme)}
+                      className={`h-8 rounded-md transition-colors border-2 ${
+                        currentTheme.name === theme.name ? "border-white" : "border-transparent"
+                      }`}
+                      style={{ backgroundColor: theme.colors.primary }}
+                      title={theme.name}
+                    />
+                  ))}
+                </div>
+              </div>
+              
+              <div>
+                <div className="text-xs font-medium text-[var(--app-foreground-muted)] mb-2">Choose Emoji</div>
+                <div className="flex flex-wrap gap-2">
+                  {EMOJIS.map((emoji) => (
+                    <button
+                      key={emoji}
+                      type="button"
+                      onClick={() => onEmojiChange(emoji)}
+                      className={`w-8 h-8 text-lg flex items-center justify-center rounded-md transition-colors ${
+                        currentEmoji === emoji 
+                          ? "text-white border-2 border-white" 
+                          : "bg-[var(--app-gray)] hover:bg-[var(--app-gray-dark)]"
+                      }`}
+                      style={{ backgroundColor: currentEmoji === emoji ? currentTheme.colors.primary : "" }}
+                    >
+                      {emoji}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+} 
