@@ -20,7 +20,7 @@ export function BuilderInfoMessage() {
             </p>
             
             {expanded && (
-              <div className="mt-3 text-xs text-[var(--app-foreground-muted)] space-y-3 animate-fade-in">
+              <div className="mt-3 text-sm text-[var(--app-foreground-muted)] space-y-3 animate-fade-in">
                 <p>👤 <span className="font-medium">Step 1:</span> Fill in your builder identity info</p>
                 <p>🎨 <span className="font-medium">Step 2:</span> Customize your card&apos;s appearance</p>
                 <p>🚀 <span className="font-medium">Step 3:</span> Review and save your card</p>
@@ -29,7 +29,7 @@ export function BuilderInfoMessage() {
             
             <button 
               onClick={() => setExpanded(!expanded)} 
-              className="text-xs font-medium text-[var(--app-accent)] mt-2 flex items-center hover:underline focus:outline-none"
+              className="text-sm font-medium text-[var(--app-accent)] mt-2 flex items-center hover:underline focus:outline-none"
             >
               {expanded ? "Show less" : "Learn more"}
             </button>

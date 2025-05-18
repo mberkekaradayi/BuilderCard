@@ -10,12 +10,12 @@ import { Icon } from "./components/DemoComponents";
 import { BuilderIdentity } from "./components/BuilderIdentity";
 import { Navbar } from "./components/Navbar";
 import { Footer } from "./components/Footer";
-import { BuilderInfoMessage } from "./components/BuilderInfoMessage";
-import { PreviewInfoMessage } from "./components/PreviewInfoMessage";
-import { ComingSoonMessage } from "./components/ComingSoonMessage";
+import { BuilderInfoMessage } from "./components/messages/builder-info-message";
+import { PreviewInfoMessage } from "./components/messages/preview-info-message";
+import { ComingSoonMessage } from "./components/messages/coming-soon-message";
 
-// Define the possible stages
-type AppStage = 'edit' | 'preview' | 'success';
+
+export type AppStage = 'edit' | 'preview' | 'success';
 
 export default function App() {
   const { setFrameReady, isFrameReady, context } = useMiniKit();
@@ -62,11 +62,6 @@ export default function App() {
     return null;
   }, [context, frameAdded, handleAddFrame]);
 
-  // Handler to track stage changes from BuilderIdentity
-  const handleStageChange = (stage: AppStage) => {
-    setAppStage(stage);
-  };
-
   return (
     <div className="flex flex-col min-h-screen font-sans text-[var(--app-foreground)] mini-app-theme bg-gradient-to-br from-blue-950 via-black/90 to-blue-950/95">
       <div className="w-full max-w-md md:max-w-lg lg:max-w-xl mx-auto px-4 md:px-6 py-3">
@@ -77,7 +72,8 @@ export default function App() {
         
         <main className="flex-1">
           <BuilderIdentity 
-            onStageChange={handleStageChange}
+            stage={appStage}
+            setStage={setAppStage}
           />
         </main>
 

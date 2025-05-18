@@ -1,55 +1,10 @@
 "use client";
 
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { cardCustomizerThemes } from "./card-customizer-themes";
+import {cardCustomizerEmojis} from "./card-customizer-emojis";
 
-const EMOJIS = ["🛠️", "🚀", "💙", "⚡", "🔥", "💻", "🏗️", "🧠", "🧩", "✨"];
-
-export const CARD_THEMES = [
-  { 
-    name: "Base Blue",
-    colors: {
-      primary: "#0052FF",
-      accent: "#0052FF"
-    }
-  },
-  { 
-    name: "Neon Green",
-    colors: {
-      primary: "#00FF85", 
-      accent: "#00FF85"
-    }
-  },
-  { 
-    name: "Cosmic Purple",
-    colors: {
-      primary: "#6E46E5",
-      accent: "#6E46E5" 
-    }
-  },
-  { 
-    name: "Sunset Orange",
-    colors: {
-      primary: "#FF5A00",
-      accent: "#FF5A00"
-    }
-  },
-  { 
-    name: "Midnight Black",
-    colors: {
-      primary: "#111827",
-      accent: "#111827"
-    }
-  },
-  {
-    name: "Turquoise",
-    colors: {
-      primary: "#00B5AD",
-      accent: "#00B5AD"
-    }
-  }
-];
-
-export type Theme = typeof CARD_THEMES[0];
+export type Theme = typeof cardCustomizerThemes[0];
 
 type CardCustomizerProps = {
   currentTheme: Theme;
@@ -102,7 +57,7 @@ export function CardCustomizer({
               <div>
                 <div className="text-xs font-medium text-[var(--app-foreground-muted)] mb-2">Choose Theme</div>
                 <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
-                  {CARD_THEMES.map((theme) => (
+                  {cardCustomizerThemes.map((theme) => (
                     <button
                       key={theme.name}
                       type="button"
@@ -120,7 +75,7 @@ export function CardCustomizer({
               <div>
                 <div className="text-xs font-medium text-[var(--app-foreground-muted)] mb-2">Choose Emoji</div>
                 <div className="grid grid-cols-3 sm:grid-cols-5 sm:grid-rows-2 gap-3 sm:gap-4 pr-1 sm:pr-2">
-                  {EMOJIS.map((emoji) => (
+                  {cardCustomizerEmojis.map((emoji) => (
                     <button
                       key={emoji}
                       type="button"

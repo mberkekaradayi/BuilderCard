@@ -1,13 +1,12 @@
 "use client";
 
-import { Button, Icon } from "./DemoComponents";
-import { Theme } from "./CardCustomizer";
+import { Button, Icon } from "../DemoComponents";
+import { Theme } from "../card-customizer/card-customizer";
 import { FaGithub } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { SiFarcaster } from "react-icons/si";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import * as htmlToImage from "html-to-image";
-import Image from "next/image";
 
 type SocialHandles = {
   github: string;
@@ -24,6 +23,7 @@ type PreviewCardProps = {
   theme: Theme;
   onCancel: () => void;
   onConfirm: () => void;
+  onImageGenerated: (imageUrl: string) => void;
 };
 
 export function PreviewCard({
@@ -34,11 +34,10 @@ export function PreviewCard({
   emoji,
   theme,
   onCancel,
-  onConfirm
+  onConfirm,
+  onImageGenerated
 }: PreviewCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
-  const [generatedImage, setGeneratedImage] = useState<string | null>(null);
-  const [downloadError, setDownloadError] = useState(false);
 
   const generateCard = async () => {
     if (cardRef.current === null) return;
@@ -69,9 +68,8 @@ export function PreviewCard({
         (window.innerWidth <= 768); // Small screen
       
       if (isMiniApp) {
-        // In mini-app, directly show the image
-        setGeneratedImage(dataUrl);
-        setDownloadError(true); // Use the same view for showing the image
+        // In mini-app, show the image for manual saving via SuccessCard
+        onImageGenerated(dataUrl);
       } else {
         // In regular browser, try download
         try {
@@ -84,56 +82,16 @@ export function PreviewCard({
           onConfirm();
         } catch (downloadError) {
           console.error('Download error:', downloadError);
-          // Fallback for download errors
-          setGeneratedImage(dataUrl);
-          setDownloadError(true);
+          // Fallback for download errors - show the image for manual saving
+          onImageGenerated(dataUrl);
         }
       }
     } catch (error) {
       console.error('Error generating card:', error);
-      setDownloadError(true);
+      // On error, just proceed to the success page
+      onConfirm();
     }
   };
-
-  // If we have a generated image but couldn't download it, show it for manual saving
-  if (generatedImage && downloadError) {
-    return (
-      <div className="space-y-6 animate-fade-in">
-        <div className="bg-[var(--app-card-bg)] backdrop-blur-md rounded-xl shadow-lg border border-[var(--app-card-border)] overflow-hidden">
-          <div className="px-5 py-3 border-b border-[var(--app-card-border)]">
-            <h3 className="text-lg font-medium text-[var(--app-foreground)]">Your BuilderCard is Ready</h3>
-            <p className="text-sm text-[var(--app-foreground-muted)]">Press and hold the image to save it to your device</p>
-          </div>
-          
-          <div className="p-6">
-            <Image 
-              src={generatedImage}
-              alt="Your BuilderCard" 
-              width={600}
-              height={400}
-              className="w-full rounded-lg border border-[var(--app-card-border)] shadow-md"
-              priority
-            />
-            <p className="text-xs text-center mt-2 text-[var(--app-foreground-muted)]">
-              Tap and hold the image to save it to your device
-            </p>
-          </div>
-          
-          <div className="p-4 flex flex-col md:flex-row gap-3 border-t border-[var(--app-card-border)]">
-            <Button 
-              variant="outline" 
-              onClick={onCancel}
-              className="flex-1 text-white"
-              icon={<Icon name="arrow-right" size="sm" className="transform rotate-180" />}
-            >
-              Go Back & Edit
-            </Button>
-            
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-6 animate-fade-in">

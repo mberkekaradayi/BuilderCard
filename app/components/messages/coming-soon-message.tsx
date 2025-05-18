@@ -19,7 +19,7 @@ export function ComingSoonMessage() {
         
     
             {expanded && (
-              <div className="mt-3 text-xs text-[var(--app-foreground-muted)] space-y-3 animate-fade-in ">
+              <div className="mt-3 text-sm text-[var(--app-foreground-muted)] space-y-3 animate-fade-in ">
                 <p>📣 <span className="font-medium">Direct Farcaster Posting:</span> Share your BuilderCard directly to your Farcaster feed</p>
                 <p>🔄 <span className="font-medium">Project Updates:</span> Keep your BuilderCard up-to-date with your latest achievements</p>
                 <p>🤝 <span className="font-medium">Builder Discovery:</span> Connect with other builders through a searchable directory</p>
@@ -28,7 +28,7 @@ export function ComingSoonMessage() {
             
             <button 
               onClick={() => setExpanded(!expanded)} 
-              className="text-xs font-medium text-[var(--app-accent)] mt-2 flex items-center hover:underline focus:outline-none"
+              className="text-sm font-medium text-[var(--app-accent)] mt-2 flex items-center hover:underline focus:outline-none"
             >
               {expanded ? "Show less" : "What's next?"}
             </button>

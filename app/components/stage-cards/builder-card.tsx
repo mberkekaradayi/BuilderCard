@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { FaEdit } from "react-icons/fa";
-import { Theme } from "./CardCustomizer";
-import { renderSocialLink, renderEditableText } from "./builderCardUtils";
+import { Theme } from "../card-customizer/card-customizer";
+import { renderSocialLink, renderEditableText } from "../builder-card-utils";
+import { Icon } from "../DemoComponents";
 
 type SocialHandles = {
   github: string;
@@ -43,7 +44,7 @@ export function BuilderCard({
   setCurrentEdit
 }: BuilderCardProps) {
   
-  // State to store original values for discard functionality
+  
   const [originalHandle, setOriginalHandle] = useState(handle);
   const [originalBuilding, setOriginalBuilding] = useState(building);
   const [originalSocials, setOriginalSocials] = useState(socials);
@@ -106,21 +107,21 @@ export function BuilderCard({
                 {currentEdit === "building" && (
                   <div className="flex items-center ml-2">
                     <button 
-                      className="text-green-500 hover:text-green-600 p-2 mr-2 text-lg"
+                      className="text-green-500 hover:text-green-600 p-1 mr-1"
                       onClick={() => setCurrentEdit('none')}
                       title="Save changes"
                     >
-                      ✓
+                      <Icon name="check" size="md" />
                     </button>
                     <button 
-                      className="text-[var(--app-foreground-muted)] hover:text-[var(--app-foreground)] p-2 text-lg"
+                      className="text-[var(--app-foreground-muted)] hover:text-[var(--app-foreground)] p-1"
                       onClick={() => {
                         setBuilding(originalBuilding);
                         setCurrentEdit('none');
                       }}
                       title="Discard changes"
                     >
-                      ✕
+                      <Icon name="plus" size="md" className="transform rotate-45" />
                     </button>
                   </div>
                 )}
@@ -155,14 +156,14 @@ export function BuilderCard({
                 {currentEdit === "socials" && (
                   <div className="flex items-center ml-2">
                     <button
-                      className="text-green-500 hover:text-green-600 p-2 mr-2 text-lg"
+                      className="text-green-500 hover:text-green-600 p-1 mr-1"
                       onClick={() => setCurrentEdit("none")}
                       title="Save changes"
                     >
-                      ✓
+                      <Icon name="check" size="md" />
                     </button>
                     <button
-                      className="text-[var(--app-foreground-muted)] hover:text-[var(--app-foreground)] p-2 text-lg"
+                      className="text-[var(--app-foreground-muted)] hover:text-[var(--app-foreground)] p-1"
                       onClick={() => {
                         // Restore original values
                         updateSocial('github', originalSocials.github);
@@ -172,7 +173,7 @@ export function BuilderCard({
                       }}
                       title="Discard changes"
                     >
-                      ✕
+                      <Icon name="plus" size="md" className="transform rotate-45" />
                     </button>
                   </div>
                 )}
@@ -223,14 +224,14 @@ export function BuilderCard({
                   {currentEdit === "projectLink" && (
                     <div className="flex items-center ml-2">
                       <button 
-                        className="text-green-500 hover:text-green-600 p-2 mr-2 text-lg"
+                        className="text-green-500 hover:text-green-600 p-1 mr-1"
                         onClick={() => setCurrentEdit('none')}
                         title="Save changes"
                       >
-                        ✓
+                        <Icon name="check" size="md" />
                       </button>
                       <button 
-                        className="text-[var(--app-foreground-muted)] hover:text-[var(--app-foreground)] p-2 text-lg"
+                        className="text-[var(--app-foreground-muted)] hover:text-[var(--app-foreground)] p-1"
                         onClick={() => {
                           // Discard changes by reverting to original value
                           setProjectLink(originalProjectLink);
@@ -238,7 +239,7 @@ export function BuilderCard({
                         }}
                         title="Discard changes"
                       >
-                        ✕
+                        <Icon name="plus" size="md" className="transform rotate-45" />
                       </button>
                     </div>
                   )}

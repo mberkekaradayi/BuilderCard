@@ -2,7 +2,8 @@ import React from "react";
 import { FaGithub } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { SiFarcaster } from "react-icons/si";
-import { EditField } from "./BuilderCard";
+import { EditField } from "./stage-cards/builder-card";
+
 
 type SocialHandles = {
   github: string;
