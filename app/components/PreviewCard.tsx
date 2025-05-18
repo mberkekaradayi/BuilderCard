@@ -57,20 +57,35 @@ export function PreviewCard({
       
       const dataUrl = await htmlToImage.toPng(cardRef.current, options);
       
-      try {
-        // Try the native download approach first
-        const link = document.createElement('a');
-        link.download = `buildercard-${handle}.png`;
-        link.href = dataUrl;
-        link.click();
-        
-        // Continue to success state
-        onConfirm();
-      } catch (downloadError) {
-        console.error('Download error:', downloadError);
-        // Fallback for mini-app environment
+      // Check if we're in a mini-app environment
+      const isMiniApp = 
+        window.navigator.userAgent.includes('Warpcast') || 
+        window.location.href.includes('miniapp') ||
+        window.self !== window.top || // Detect iframe
+        (window.location.ancestorOrigins && 
+         window.location.ancestorOrigins.length > 0 && 
+         window.location.ancestorOrigins[0].includes('warpcast'));
+      
+      if (isMiniApp) {
+        // In mini-app, directly show the image
         setGeneratedImage(dataUrl);
-        setDownloadError(true);
+        setDownloadError(true); // Use the same view for showing the image
+      } else {
+        // In regular browser, try download
+        try {
+          const link = document.createElement('a');
+          link.download = `buildercard-${handle}.png`;
+          link.href = dataUrl;
+          link.click();
+          
+          // Continue to success state
+          onConfirm();
+        } catch (downloadError) {
+          console.error('Download error:', downloadError);
+          // Fallback for download errors
+          setGeneratedImage(dataUrl);
+          setDownloadError(true);
+        }
       }
     } catch (error) {
       console.error('Error generating card:', error);
