@@ -37,7 +37,7 @@ export const renderSocialLink = (
     case 'twitter':
       url = `https://twitter.com/${handle.replace('@', '')}`;
       icon = <FaXTwitter className="mr-1" />;
-      placeholder = 'twitter handle';
+      placeholder = 'X handle';
       break;
   }
   

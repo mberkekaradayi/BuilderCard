@@ -5,6 +5,8 @@ import { Theme } from "./CardCustomizer";
 import { FaGithub } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { SiFarcaster } from "react-icons/si";
+import { useRef } from "react";
+import * as htmlToImage from "html-to-image";
 
 type SocialHandles = {
   github: string;
@@ -33,16 +35,47 @@ export function PreviewCard({
   onCancel,
   onConfirm
 }: PreviewCardProps) {
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  const downloadCard = async () => {
+    if (cardRef.current === null) return;
+    
+    try {
+      // Improved quality options
+      const options = {
+        pixelRatio: 3, // Higher pixel ratio for better resolution
+        quality: 1.0, // Maximum quality
+        backgroundColor: '#000', // Match background color to avoid transparency issues
+        style: {
+          transform: 'scale(1)', // Ensure no scaling issues
+          'transform-origin': 'top left',
+        }
+      };
+      
+      const dataUrl = await htmlToImage.toPng(cardRef.current, options);
+      
+      const link = document.createElement('a');
+      link.download = `buildercard-${handle}.png`;
+      link.href = dataUrl;
+      link.click();
+      
+      onConfirm();
+    } catch (error) {
+      console.error('Error saving card:', error);
+    }
+  };
+
   return (
     <div className="space-y-6 animate-fade-in">
       <div className="bg-[var(--app-card-bg)] backdrop-blur-md rounded-xl shadow-lg border border-[var(--app-card-border)] overflow-hidden">
         <div className="px-5 py-3 border-b border-[var(--app-card-border)]">
           <h3 className="text-lg font-medium text-[var(--app-foreground)]">Preview Your BuilderCard</h3>
-          <p className="text-sm text-[var(--app-foreground-muted)]">Review your card before casting</p>
+          <p className="text-sm text-[var(--app-foreground-muted)]">Review your card before saving</p>
         </div>
         
         <div className="p-6">
           <div 
+            ref={cardRef}
             className="rounded-lg overflow-hidden border border-[var(--app-card-border)] shadow-md" 
             style={{ backgroundImage: `linear-gradient(to bottom right, ${theme.colors.primary}10, ${theme.colors.primary}30)` }}
           >
@@ -144,9 +177,9 @@ export function PreviewCard({
             </div>
             
             <div className="py-3 px-4 flex justify-between items-center" style={{ backgroundColor: theme.colors.primary }}>
-              <span className="text-white text-sm font-medium">BuilderCard</span>
-              <span className="text-white/70 text-xs">Built on Base</span>
-            </div>
+            <span className="text-white text-sm font-bold drop-shadow-lg" style={{ textShadow: '0 1px 3px rgba(0,0,0,0.8), 0 0 5px rgba(0,0,0,0.5)' }}>BuilderCard</span>
+            <span className="text-white text-xs font-bold drop-shadow-lg" style={{ textShadow: '0 1px 3px rgba(0,0,0,0.8), 0 0 5px rgba(0,0,0,0.5)' }}>Built on Base</span>
+          </div>
           </div>
         </div>
         
@@ -154,7 +187,7 @@ export function PreviewCard({
           <Button 
             variant="outline" 
             onClick={onCancel}
-            className="flex-1"
+            className="flex-1 text-white"
             icon={<Icon name="arrow-right" size="sm" className="transform rotate-180" />}
           >
             Go Back & Edit
@@ -162,11 +195,11 @@ export function PreviewCard({
           
           <Button 
             variant="primary" 
-            onClick={onConfirm}
-            className="flex-1"
+            onClick={downloadCard}
+            className="flex-1 text-white"
             icon={<Icon name="check" size="sm" />}
           >
-            Cast My Card
+            Save My Card
           </Button>
         </div>
       </div>

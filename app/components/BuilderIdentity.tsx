@@ -13,7 +13,14 @@ type SocialHandles = {
   twitter: string;
 };
 
-export function BuilderIdentity() {
+ // Define the possible stages
+type Stage = 'edit' | 'preview' | 'success';
+
+type BuilderIdentityProps = {
+  onStageChange?: (stage: Stage) => void;
+};
+
+export function BuilderIdentity({ onStageChange }: BuilderIdentityProps) {
   const { address } = useAccount();
   
   // Form state
@@ -27,7 +34,9 @@ export function BuilderIdentity() {
   const [emoji, setEmoji] = useState("🛠️");
   const [projectLink, setProjectLink] = useState("");
   const [theme, setTheme] = useState<Theme>(CARD_THEMES[0]);
-  const [showSuccess, setShowSuccess] = useState(false);
+  
+  // Replace multiple states with a single stage state
+  const [stage, setStage] = useState<Stage>('edit');
   
   // Customizer state - starting with null to avoid hydration mismatch
   const [isCustomizerOpen, setIsCustomizerOpen] = useState<boolean | null>(null);
@@ -35,8 +44,12 @@ export function BuilderIdentity() {
   // Edit state
   const [currentEdit, setCurrentEdit] = useState<EditField>("none");
   
-  // Preview state
-  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  // Notify parent when stage changes
+  useEffect(() => {
+    if (onStageChange) {
+      onStageChange(stage);
+    }
+  }, [stage, onStageChange]);
   
   // Initialize client-side state after hydration
   useEffect(() => {
@@ -71,24 +84,17 @@ export function BuilderIdentity() {
     }));
   }, [address]);
 
-  const handleCast = () => {
-    setShowSuccess(true);
-    setTimeout(() => {
-      setShowSuccess(false);
-      setBuilding("");
-      setSocials({
-        github: "",
-        warpcast: "",
-        twitter: ""
-      });
-      setProjectLink("");
-      setIsPreviewOpen(false);
-    }, 2000);
+  const handleSave = () => {
+    setStage('success');
   };
 
   const handleShowPreview = () => {
-    setIsPreviewOpen(true);
+    setStage('preview');
     setCurrentEdit("none");
+  };
+
+  const returnToEdit = () => {
+    setStage('edit');
   };
 
   const updateSocial = (platform: keyof SocialHandles, value: string) => {
@@ -98,7 +104,7 @@ export function BuilderIdentity() {
     }));
   };
 
-  if (showSuccess) {
+  if (stage === 'success') {
     return (
       <div className="space-y-6 animate-fade-in">
         <div className="bg-[var(--app-card-bg)] backdrop-blur-md rounded-xl shadow-lg border border-[var(--app-card-border)] overflow-hidden p-10 flex flex-col items-center justify-center">
@@ -109,11 +115,19 @@ export function BuilderIdentity() {
             Success!
           </h3>
           <p className="text-center text-[var(--app-foreground-muted)] mb-2">
-            Your BuilderCard has been cast!
+            Your BuilderCard has been saved!
           </p>
           <div className="text-xs text-[var(--app-foreground-muted)] mt-2">
             Share your card with the Base community.
           </div>
+          <Button 
+            variant="primary" 
+            onClick={returnToEdit}
+            className="mt-6 text-white"
+            icon={<Icon name="arrow-right" size="sm" className="transform rotate-180" />}
+          >
+            Create Another Card
+          </Button>
         </div>
       </div>
     );
@@ -124,7 +138,7 @@ export function BuilderIdentity() {
     return null;
   }
 
-  if (isPreviewOpen) {
+  if (stage === 'preview') {
     return (
       <PreviewCard
         handle={handle}
@@ -133,8 +147,8 @@ export function BuilderIdentity() {
         projectLink={projectLink}
         emoji={emoji}
         theme={theme}
-        onCancel={() => setIsPreviewOpen(false)}
-        onConfirm={handleCast}
+        onCancel={returnToEdit}
+        onConfirm={handleSave}
       />
     );
   }
@@ -171,7 +185,7 @@ export function BuilderIdentity() {
       <Button 
         variant="primary" 
         onClick={handleShowPreview}
-        className="w-full"
+        className="w-full text-white"
         icon={<Icon name="arrow-right" size="sm" />}
       >
         Preview My BuilderCard

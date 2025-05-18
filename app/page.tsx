@@ -10,11 +10,17 @@ import { Icon } from "./components/DemoComponents";
 import { BuilderIdentity } from "./components/BuilderIdentity";
 import { Navbar } from "./components/Navbar";
 import { Footer } from "./components/Footer";
-import { InfoMessage } from "./components/InfoMessage";
+import { BuilderInfoMessage } from "./components/BuilderInfoMessage";
+import { PreviewInfoMessage } from "./components/PreviewInfoMessage";
+import { ComingSoonMessage } from "./components/ComingSoonMessage";
+
+// Define the possible stages
+type AppStage = 'edit' | 'preview' | 'success';
 
 export default function App() {
   const { setFrameReady, isFrameReady, context } = useMiniKit();
   const [frameAdded, setFrameAdded] = useState(false);
+  const [appStage, setAppStage] = useState<AppStage>('edit');
 
   const addFrame = useAddFrame();
 
@@ -56,16 +62,26 @@ export default function App() {
     return null;
   }, [context, frameAdded, handleAddFrame]);
 
+  // Handler to track stage changes from BuilderIdentity
+  const handleStageChange = (stage: AppStage) => {
+    setAppStage(stage);
+  };
+
   return (
-    <div className="flex flex-col min-h-screen font-sans text-[var(--app-foreground)] mini-app-theme from-[var(--app-background)] to-[var(--app-gray)]">
-      <div className="w-full max-w-md mx-auto px-4 py-3">
+    <div className="flex flex-col min-h-screen font-sans text-[var(--app-foreground)] mini-app-theme bg-gradient-to-br from-blue-950 via-black/90 to-blue-950/95">
+      <div className="w-full max-w-md md:max-w-lg lg:max-w-xl mx-auto px-4 md:px-6 py-3">
         <Navbar saveFrameButton={saveFrameButton} />
 
-        <InfoMessage />
-
+        {appStage === 'preview' && <PreviewInfoMessage />}
+        {appStage === 'edit' && <BuilderInfoMessage />}
+        
         <main className="flex-1">
-          <BuilderIdentity />
+          <BuilderIdentity 
+            onStageChange={handleStageChange}
+          />
         </main>
+
+        {appStage === 'edit' && <ComingSoonMessage />}
 
         <Footer />
       </div>

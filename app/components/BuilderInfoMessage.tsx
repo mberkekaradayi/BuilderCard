@@ -3,7 +3,7 @@
 import { FaInfoCircle } from "react-icons/fa";
 import { useState } from "react";
 
-export function InfoMessage() {
+export function BuilderInfoMessage() {
   const [expanded, setExpanded] = useState(false);
 
   return (
@@ -16,14 +16,14 @@ export function InfoMessage() {
           <div className="flex-1">
             <h2 className="text-lg font-medium mb-1 text-[var(--app-foreground)]">Create Your BuilderCard</h2>
             <p className="text-sm text-[var(--app-foreground-muted)] mb-2">
-              Build and cast your personal BuilderCard to showcase your projects and connect with other builders on Base.
+              Build and save your personal BuilderCard to showcase your projects and connect with other builders on Base.
             </p>
             
             {expanded && (
-              <div className="mt-3 text-xs text-[var(--app-foreground-muted)] space-y-2 animate-fade-in">
+              <div className="mt-3 text-xs text-[var(--app-foreground-muted)] space-y-3 animate-fade-in">
                 <p>👤 <span className="font-medium">Step 1:</span> Fill in your builder identity info</p>
                 <p>🎨 <span className="font-medium">Step 2:</span> Customize your card&apos;s appearance</p>
-                <p>🚀 <span className="font-medium">Step 3:</span> Review and cast to your feed</p>
+                <p>🚀 <span className="font-medium">Step 3:</span> Review and save your card</p>
               </div>
             )}
             

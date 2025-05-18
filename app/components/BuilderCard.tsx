@@ -293,8 +293,8 @@ export function BuilderCard({
           </div>
           
           <div className="py-3 px-4 flex justify-between items-center" style={{ backgroundColor: theme.colors.primary }}>
-            <span className="text-white text-sm font-medium">BuilderCard</span>
-            <span className="text-white/70 text-xs">Built on Base</span>
+            <span className="text-white text-sm font-bold drop-shadow-lg" style={{ textShadow: '0 1px 3px rgba(0,0,0,0.8), 0 0 5px rgba(0,0,0,0.5)' }}>BuilderCard</span>
+            <span className="text-white text-xs font-bold drop-shadow-lg" style={{ textShadow: '0 1px 3px rgba(0,0,0,0.8), 0 0 5px rgba(0,0,0,0.5)' }}>Built on Base</span>
           </div>
         </div>
       </div>
