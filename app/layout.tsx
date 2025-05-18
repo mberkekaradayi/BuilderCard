@@ -43,7 +43,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="icon" href="/buiilderCardIcon.png" />
+        <link rel="icon" href="/favicon/favicon-32x32.png" />
+        <link rel="icon" href="/favicon/favicon-16x16.png" sizes="16x16" />
+        <link rel="icon" href="/favicon/favicon-32x32.png" sizes="32x32" />
       </head>
       <body className="bg-background">
         <Providers>{children}</Providers>
