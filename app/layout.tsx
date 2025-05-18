@@ -42,6 +42,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" href="/buiilderCardIcon.png" />
+      </head>
       <body className="bg-background">
         <Providers>{children}</Providers>
       </body>
