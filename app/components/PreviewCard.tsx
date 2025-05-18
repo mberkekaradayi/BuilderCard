@@ -57,14 +57,16 @@ export function PreviewCard({
       
       const dataUrl = await htmlToImage.toPng(cardRef.current, options);
       
-      // Check if we're in a mini-app environment
+      // Check if we're in a mini-app environment or on mobile
       const isMiniApp = 
         window.navigator.userAgent.includes('Warpcast') || 
         window.location.href.includes('miniapp') ||
         window.self !== window.top || // Detect iframe
         (window.location.ancestorOrigins && 
          window.location.ancestorOrigins.length > 0 && 
-         window.location.ancestorOrigins[0].includes('warpcast'));
+         window.location.ancestorOrigins[0].includes('warpcast')) ||
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || // Mobile device
+        (window.innerWidth <= 768); // Small screen
       
       if (isMiniApp) {
         // In mini-app, directly show the image
@@ -127,14 +129,6 @@ export function PreviewCard({
               Go Back & Edit
             </Button>
             
-            <Button 
-              variant="primary" 
-              onClick={onConfirm}
-              className="flex-1 text-white"
-              icon={<Icon name="check" size="sm" />}
-            >
-              Continue
-            </Button>
           </div>
         </div>
       </div>
