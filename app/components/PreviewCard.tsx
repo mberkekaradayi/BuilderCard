@@ -5,8 +5,9 @@ import { Theme } from "./CardCustomizer";
 import { FaGithub } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { SiFarcaster } from "react-icons/si";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import * as htmlToImage from "html-to-image";
+import Image from "next/image";
 
 type SocialHandles = {
   github: string;
@@ -36,8 +37,10 @@ export function PreviewCard({
   onConfirm
 }: PreviewCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
+  const [generatedImage, setGeneratedImage] = useState<string | null>(null);
+  const [downloadError, setDownloadError] = useState(false);
 
-  const downloadCard = async () => {
+  const generateCard = async () => {
     if (cardRef.current === null) return;
     
     try {
@@ -54,16 +57,74 @@ export function PreviewCard({
       
       const dataUrl = await htmlToImage.toPng(cardRef.current, options);
       
-      const link = document.createElement('a');
-      link.download = `buildercard-${handle}.png`;
-      link.href = dataUrl;
-      link.click();
-      
-      onConfirm();
+      try {
+        // Try the native download approach first
+        const link = document.createElement('a');
+        link.download = `buildercard-${handle}.png`;
+        link.href = dataUrl;
+        link.click();
+        
+        // Continue to success state
+        onConfirm();
+      } catch (downloadError) {
+        console.error('Download error:', downloadError);
+        // Fallback for mini-app environment
+        setGeneratedImage(dataUrl);
+        setDownloadError(true);
+      }
     } catch (error) {
-      console.error('Error saving card:', error);
+      console.error('Error generating card:', error);
+      setDownloadError(true);
     }
   };
+
+  // If we have a generated image but couldn't download it, show it for manual saving
+  if (generatedImage && downloadError) {
+    return (
+      <div className="space-y-6 animate-fade-in">
+        <div className="bg-[var(--app-card-bg)] backdrop-blur-md rounded-xl shadow-lg border border-[var(--app-card-border)] overflow-hidden">
+          <div className="px-5 py-3 border-b border-[var(--app-card-border)]">
+            <h3 className="text-lg font-medium text-[var(--app-foreground)]">Your BuilderCard is Ready</h3>
+            <p className="text-sm text-[var(--app-foreground-muted)]">Press and hold the image to save it to your device</p>
+          </div>
+          
+          <div className="p-6">
+            <Image 
+              src={generatedImage}
+              alt="Your BuilderCard" 
+              width={600}
+              height={400}
+              className="w-full rounded-lg border border-[var(--app-card-border)] shadow-md"
+              priority
+            />
+            <p className="text-xs text-center mt-2 text-[var(--app-foreground-muted)]">
+              Tap and hold the image to save it to your device
+            </p>
+          </div>
+          
+          <div className="p-4 flex flex-col md:flex-row gap-3 border-t border-[var(--app-card-border)]">
+            <Button 
+              variant="outline" 
+              onClick={onCancel}
+              className="flex-1 text-white"
+              icon={<Icon name="arrow-right" size="sm" className="transform rotate-180" />}
+            >
+              Go Back & Edit
+            </Button>
+            
+            <Button 
+              variant="primary" 
+              onClick={onConfirm}
+              className="flex-1 text-white"
+              icon={<Icon name="check" size="sm" />}
+            >
+              Continue
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -195,7 +256,7 @@ export function PreviewCard({
           
           <Button 
             variant="primary" 
-            onClick={downloadCard}
+            onClick={generateCard}
             className="flex-1 text-white"
             icon={<Icon name="check" size="sm" />}
           >
