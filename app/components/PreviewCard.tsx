@@ -64,14 +64,15 @@ export function PreviewCard({
                 </div>
               </div>
               
-              <div className="bg-[var(--app-card-bg)] rounded-lg p-4 mb-5">
-                <h4 className="font-semibold mb-2 text-[var(--app-foreground)]">Building:</h4>
-                <p className="text-[var(--app-foreground-muted)]">
-                  {building || "Not specified"}
-                </p>
-              </div>
-              
               <div className="space-y-3">
+                <div className="text-sm font-medium">
+                  <span>Building:</span>
+                </div>
+                
+                <p className="text-[var(--app-foreground-muted)] pl-1">
+                  {building || <span className="italic">Not specified</span>}
+                </p>
+                
                 <div className="text-sm font-medium">
                   <span>Connect</span>
                 </div>

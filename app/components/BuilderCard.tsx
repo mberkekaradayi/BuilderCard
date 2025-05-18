@@ -1,10 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { FaGithub, FaEdit } from "react-icons/fa";
-import { FaXTwitter } from "react-icons/fa6";
-import { SiFarcaster } from "react-icons/si";
+import { FaEdit } from "react-icons/fa";
 import { Theme } from "./CardCustomizer";
+import { renderSocialLink, renderEditableText } from "./builderCardUtils";
 
 type SocialHandles = {
   github: string;
@@ -63,136 +62,6 @@ export function BuilderCard({
     }
   }, [currentEdit, handle, building, socials, projectLink]);
 
-  // Helper to render social links
-  const renderSocialLink = (platform: string, handle: string) => {
-    if (!handle && currentEdit !== "socials") return null;
-    
-    let url = '';
-    let icon = null;
-    let placeholder = '';
-    
-    switch (platform) {
-      case 'github':
-        url = `https://github.com/${handle}`;
-        icon = <FaGithub className="mr-1" />;
-        placeholder = 'github username';
-        break;
-      case 'warpcast':
-        url = `https://warpcast.com/${handle}`;
-        icon = <SiFarcaster className="mr-1" />;
-        placeholder = 'warpcast handle';
-        break;
-      case 'twitter':
-        url = `https://twitter.com/${handle.replace('@', '')}`;
-        icon = <FaXTwitter className="mr-1" />;
-        placeholder = 'twitter handle';
-        break;
-    }
-    
-    if (currentEdit === "socials") {
-      return (
-        <div className="flex items-center w-full mb-2">
-          <div className="inline-flex items-center px-3 border border-r-0 border-[var(--app-card-border)] rounded-l-md bg-[var(--app-gray)] text-[var(--app-foreground-muted)]">
-            {icon}
-          </div>
-          <input
-            type="text"
-            value={handle}
-            onChange={(e) => updateSocial(platform as keyof SocialHandles, e.target.value)}
-            placeholder={placeholder}
-            className="flex-1 px-3 py-2 bg-[var(--app-card-bg)] border border-[var(--app-card-border)] rounded-r-md text-[var(--app-foreground)] placeholder-[var(--app-foreground-muted)] focus:outline-none focus:ring-1 focus:ring-[var(--app-accent)]"
-          />
-        </div>
-      );
-    }
-    
-    if (!handle) {
-      return (
-        <div className="flex items-center opacity-60 hover:opacity-100" onClick={() => setCurrentEdit("socials")}>
-          {icon}
-          <span className="text-[var(--app-foreground-muted)] text-sm italic">Add {placeholder}</span>
-        </div>
-      );
-    }
-    
-    return (
-      <a 
-        href={url} 
-        target="_blank" 
-        rel="noopener noreferrer" 
-        className="flex items-center text-[var(--app-foreground)] hover:text-[var(--app-accent)] transition-colors"
-        onClick={(e) => {
-          e.preventDefault();
-          setCurrentEdit("socials");
-        }}
-      >
-        {icon}
-        <span>{handle}</span>
-      </a>
-    );
-  };
-
-  const renderEditableText = (
-    value: string, 
-    onChange: (value: string) => void, 
-    fieldType: EditField,
-    placeholder: string,
-    isEditing: boolean
-  ) => {
-    if (isEditing) {
-      return (
-        <div className="relative w-full">
-          <input
-            type="text"
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
-            placeholder={placeholder}
-            className="w-full pr-16 px-3 py-2 bg-[var(--app-card-bg)] border border-[var(--app-card-border)] rounded-md text-[var(--app-foreground)] placeholder-[var(--app-foreground-muted)] focus:outline-none focus:ring-1 focus:ring-[var(--app-accent)]"
-            autoFocus
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                setCurrentEdit('none');
-              }
-            }}
-          />
-          <div className="absolute right-2 top-1/2 -translate-y-1/2 flex">
-            <button 
-              className="text-green-500 hover:text-green-600 p-1 mr-1"
-              onClick={() => setCurrentEdit('none')}
-              title="Save changes"
-            >
-              ✓
-            </button>
-            <button 
-              className="text-[var(--app-foreground-muted)] hover:text-[var(--app-foreground)] p-1"
-              onClick={() => {
-                // Discard changes by reverting to original value
-                if (fieldType === 'handle') {
-                  setHandle(originalHandle);
-                } else if (fieldType === 'building') {
-                  setBuilding(originalBuilding);
-                }
-                setCurrentEdit('none');
-              }}
-              title="Discard changes"
-            >
-              ✕
-            </button>
-          </div>
-        </div>
-      );
-    }
-
-    return (
-      <div 
-        className="relative group cursor-pointer" 
-        onClick={() => setCurrentEdit(fieldType)}
-      >
-        <span>{value || placeholder}</span>
-      </div>
-    );
-  };
-
   return (
     <div className="bg-[var(--app-card-bg)] backdrop-blur-md rounded-xl shadow-lg border border-[var(--app-card-border)] overflow-hidden">
       <div className="px-5 py-3 border-b border-[var(--app-card-border)]">
@@ -218,97 +87,161 @@ export function BuilderCard({
                   <h3 className="font-bold text-lg text-[var(--app-foreground)] flex items-center">
                     @
                     {currentEdit === "handle" 
-                      ? renderEditableText(handle, setHandle, "handle", "yourhandle", true)
-                      : renderEditableText(handle, setHandle, "handle", "yourhandle", false)
+                      ? renderEditableText(handle, setHandle, "handle", "yourhandle", true, setCurrentEdit, originalHandle)
+                      : <span>{handle || "yourhandle"}</span>
                     }
+                    {currentEdit !== "handle" && <FaEdit className="ml-2 inline-block opacity-50 cursor-pointer" size={16} onClick={() => setCurrentEdit("handle")} />}
                   </h3>
                   <p className="text-xs text-[var(--app-foreground-muted)]">Builder on Base</p>
                 </div>
               </div>
             </div>
             
-            <div className="bg-[var(--app-card-bg)] rounded-lg p-4 mb-5">
-              <h4 className="font-semibold mb-2 text-[var(--app-foreground)]">Building:</h4>
-              <p className="text-[var(--app-foreground-muted)]">
+            <div className="space-y-3">
+              <div className="text-sm font-medium flex items-center">
+                <h4 className="font-semibold text-[var(--app-foreground)]">Building:</h4>
+                {currentEdit !== "building" && (
+                  <FaEdit className="ml-2 inline-block opacity-50 cursor-pointer" size={16} onClick={() => setCurrentEdit("building")} />
+                )}
+                {currentEdit === "building" && (
+                  <div className="flex items-center ml-2">
+                    <button 
+                      className="text-green-500 hover:text-green-600 p-2 mr-2 text-lg"
+                      onClick={() => setCurrentEdit('none')}
+                      title="Save changes"
+                    >
+                      ✓
+                    </button>
+                    <button 
+                      className="text-[var(--app-foreground-muted)] hover:text-[var(--app-foreground)] p-2 text-lg"
+                      onClick={() => {
+                        setBuilding(originalBuilding);
+                        setCurrentEdit('none');
+                      }}
+                      title="Discard changes"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                )}
+              </div>
+              
+              <p className="text-[var(--app-foreground-muted)] pl-1">
                 {currentEdit === "building" 
-                  ? renderEditableText(building, setBuilding, "building", "What are you building?", true)
-                  : renderEditableText(building, setBuilding, "building", "What are you building?", false)
+                  ? <div className="relative w-full">
+                      <input
+                        type="text"
+                        value={building}
+                        onChange={(e) => setBuilding(e.target.value)}
+                        placeholder="What are you building?"
+                        className="w-full px-3 py-2 bg-[var(--app-card-bg)] border border-[var(--app-card-border)] rounded-md text-[var(--app-foreground)] placeholder-[var(--app-foreground-muted)] focus:outline-none focus:ring-1 focus:ring-[var(--app-accent)]"
+                        autoFocus
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            setCurrentEdit('none');
+                          }
+                        }}
+                      />
+                    </div>
+                  : <span>{building || <span className="italic">What are you building?</span>}</span>
                 }
               </p>
-            </div>
-            
-            <div className="space-y-3">
-              <div className="text-sm font-medium" onClick={() => setCurrentEdit("socials")}>
+              
+              <div className="text-sm font-medium flex items-center">
                 <span>Connect</span>
-                {currentEdit !== "socials" && <FaEdit className="ml-2 inline-block opacity-50" size={12} />}
+                {currentEdit !== "socials" && (
+                  <FaEdit className="ml-2 inline-block opacity-50 cursor-pointer" size={16} onClick={() => setCurrentEdit("socials")} />
+                )}
+                {currentEdit === "socials" && (
+                  <div className="flex items-center ml-2">
+                    <button
+                      className="text-green-500 hover:text-green-600 p-2 mr-2 text-lg"
+                      onClick={() => setCurrentEdit("none")}
+                      title="Save changes"
+                    >
+                      ✓
+                    </button>
+                    <button
+                      className="text-[var(--app-foreground-muted)] hover:text-[var(--app-foreground)] p-2 text-lg"
+                      onClick={() => {
+                        // Restore original values
+                        updateSocial('github', originalSocials.github);
+                        updateSocial('warpcast', originalSocials.warpcast);
+                        updateSocial('twitter', originalSocials.twitter);
+                        setCurrentEdit("none");
+                      }}
+                      title="Discard changes"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                )}
               </div>
               
               {currentEdit === "socials" ? (
                 <div className="py-2">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-xs text-[var(--app-foreground-muted)]">Edit social handles</span>
-                    <div className="flex">
-                      <button
-                        className="text-green-500 hover:text-green-600 p-1 mr-1"
-                        onClick={() => setCurrentEdit("none")}
-                        title="Save changes"
-                      >
-                        ✓
-                      </button>
-                      <button
-                        className="text-[var(--app-foreground-muted)] hover:text-[var(--app-foreground)] p-1"
-                        onClick={() => {
-                          // Restore original values
-                          updateSocial('github', originalSocials.github);
-                          updateSocial('warpcast', originalSocials.warpcast);
-                          updateSocial('twitter', originalSocials.twitter);
-                          setCurrentEdit("none");
-                        }}
-                        title="Discard changes"
-                      >
-                        ✕
-                      </button>
-                    </div>
-                  </div>
-                  {renderSocialLink('warpcast', socials.warpcast)}
-                  {renderSocialLink('github', socials.github)}
-                  {renderSocialLink('twitter', socials.twitter)}
+                  {renderSocialLink('warpcast', socials.warpcast, currentEdit, setCurrentEdit, updateSocial)}
+                  {renderSocialLink('github', socials.github, currentEdit, setCurrentEdit, updateSocial)}
+                  {renderSocialLink('twitter', socials.twitter, currentEdit, setCurrentEdit, updateSocial)}
                 </div>
               ) : (
                 <div className="flex flex-col gap-2 pl-1 py-1">
                   {socials.warpcast && (
                     <div className="flex items-center ">
-                      {renderSocialLink('warpcast', socials.warpcast)}
+                      {renderSocialLink('warpcast', socials.warpcast, currentEdit, setCurrentEdit, updateSocial)}
                     </div>
                   )}
                   
                   {socials.github && (
                     <div className="flex items-center">
-                      {renderSocialLink('github', socials.github)}
+                      {renderSocialLink('github', socials.github, currentEdit, setCurrentEdit, updateSocial)}
                     </div>
                   )}
                   
                   {socials.twitter && (
                     <div className="flex items-center">
-                      {renderSocialLink('twitter', socials.twitter)}
+                      {renderSocialLink('twitter', socials.twitter, currentEdit, setCurrentEdit, updateSocial)}
                     </div>
                   )}
                   
                   {!socials.warpcast && !socials.github && !socials.twitter && (
                     <div 
-                      className="text-xs text-[var(--app-foreground-muted)] italic cursor-pointer hover:text-[var(--app-foreground)]"
-                      onClick={() => setCurrentEdit("socials")}
+                      className="text-xs text-[var(--app-foreground-muted)] italic"
                     >
-                      Add your social handles to connect
+                      Add your social media handles
                     </div>
                   )}
                 </div>
               )}
               
               <div className="mt-3">
-                <div className="text-sm font-medium text-[var(--app-foreground)] cursor-pointer" onClick={() => setCurrentEdit("projectLink")}>
+                <div className="text-sm font-medium text-[var(--app-foreground)] cursor-pointer flex items-center">
                   <span>Project</span>
-                  {currentEdit !== "projectLink" && <FaEdit className="ml-2 inline-block opacity-50" size={12} />}
+                  {currentEdit !== "projectLink" && (
+                    <FaEdit className="ml-2 inline-block opacity-50 cursor-pointer" size={16} onClick={() => setCurrentEdit("projectLink")} />
+                  )}
+                  {currentEdit === "projectLink" && (
+                    <div className="flex items-center ml-2">
+                      <button 
+                        className="text-green-500 hover:text-green-600 p-2 mr-2 text-lg"
+                        onClick={() => setCurrentEdit('none')}
+                        title="Save changes"
+                      >
+                        ✓
+                      </button>
+                      <button 
+                        className="text-[var(--app-foreground-muted)] hover:text-[var(--app-foreground)] p-2 text-lg"
+                        onClick={() => {
+                          // Discard changes by reverting to original value
+                          setProjectLink(originalProjectLink);
+                          setCurrentEdit('none');
+                        }}
+                        title="Discard changes"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  )}
                 </div>
                 
                 {currentEdit === "projectLink" ? (
@@ -319,7 +252,7 @@ export function BuilderCard({
                         value={projectLink}
                         onChange={(e) => setProjectLink(e.target.value)}
                         placeholder="https://yourproject.xyz"
-                        className="w-full mt-2 pr-16 px-3 py-2 bg-[var(--app-card-bg)] border border-[var(--app-card-border)] rounded-md text-[var(--app-foreground)] placeholder-[var(--app-foreground-muted)] focus:outline-none focus:ring-1 focus:ring-[var(--app-accent)]"
+                        className="w-full mt-2 px-3 py-2 bg-[var(--app-card-bg)] border border-[var(--app-card-border)] rounded-md text-[var(--app-foreground)] placeholder-[var(--app-foreground-muted)] focus:outline-none focus:ring-1 focus:ring-[var(--app-accent)]"
                         autoFocus
                         onKeyDown={(e) => {
                           if (e.key === 'Enter') {
@@ -327,28 +260,6 @@ export function BuilderCard({
                           }
                         }}
                       />
-                      <div className="absolute right-2 top-1/2 -translate-y-1/2 flex">
-                        <button 
-                          className="text-green-500 hover:text-green-600 p-1 mr-1"
-                          onClick={() => setCurrentEdit('none')}
-                          title="Save changes"
-                        >
-                          ✓
-                        </button>
-                        <button 
-                          className="text-[var(--app-foreground-muted)] hover:text-[var(--app-foreground)] p-1"
-                          onClick={() => {
-                            // Discard changes by reverting to original value
-                            setProjectLink(originalProjectLink);
-                            setCurrentEdit('none');
-                          }}
-                          title="Discard changes"
-                        >
-                          ✕
-                        </button>
-                      </div>
-                    </div>
-                    <div className="flex justify-end pt-2">
                     </div>
                   </div>
                 ) : (
@@ -370,8 +281,7 @@ export function BuilderCard({
                       </div>
                     ) : (
                       <div 
-                        className="text-xs text-[var(--app-foreground-muted)] italic cursor-pointer hover:text-[var(--app-foreground)]"
-                        onClick={() => setCurrentEdit("projectLink")}
+                        className="text-xs text-[var(--app-foreground-muted)] italic"
                       >
                         Add a link to your project
                       </div>
