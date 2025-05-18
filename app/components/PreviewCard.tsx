@@ -128,7 +128,7 @@ export function PreviewCard({
                         <div
                           className="text-sm flex items-center text-[var(--app-foreground)]"
                         >
-                          <FaExternalLinkAlt className="mr-1" size={14} />
+                  
                           {projectLink.replace(/^https?:\/\//, '')}
                         </div>
                       </div>

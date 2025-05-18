@@ -128,7 +128,6 @@ export function BuilderCard({
       >
         {icon}
         <span>{handle}</span>
-        <FaEdit className="ml-2 opacity-50" size={12} />
       </a>
     );
   };
@@ -190,7 +189,6 @@ export function BuilderCard({
         onClick={() => setCurrentEdit(fieldType)}
       >
         <span>{value || placeholder}</span>
-        <FaEdit className="ml-2 inline-block opacity-0 group-hover:opacity-50" size={12} />
       </div>
     );
   };
@@ -367,9 +365,7 @@ export function BuilderCard({
                             setCurrentEdit("projectLink");
                           }}
                         >
-                          <FaExternalLinkAlt className="mr-1" size={14} />
                           {projectLink.replace(/^https?:\/\//, '')}
-                          <FaEdit className="ml-2 opacity-50" size={12} />
                         </a>
                       </div>
                     ) : (
