@@ -2,7 +2,7 @@
 
 import { Button, Icon } from "./DemoComponents";
 import { Theme } from "./CardCustomizer";
-import { FaGithub, FaExternalLinkAlt } from "react-icons/fa";
+import { FaGithub } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { SiFarcaster } from "react-icons/si";
 

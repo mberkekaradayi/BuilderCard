@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { FaGithub, FaExternalLinkAlt, FaEdit } from "react-icons/fa";
+import { FaGithub, FaEdit } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { SiFarcaster } from "react-icons/si";
 import { Theme } from "./CardCustomizer";
@@ -61,7 +61,7 @@ export function BuilderCard({
     } else if (currentEdit === 'projectLink') {
       setOriginalProjectLink(projectLink);
     }
-  }, [currentEdit]);
+  }, [currentEdit, handle, building, socials, projectLink]);
 
   // Helper to render social links
   const renderSocialLink = (platform: string, handle: string) => {
