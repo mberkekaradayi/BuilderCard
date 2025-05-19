@@ -3,6 +3,7 @@ import "@coinbase/onchainkit/styles.css";
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { Providers } from "./providers";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -48,7 +49,9 @@ export default function RootLayout({
         <link rel="icon" href="/favicon/favicon-32x32.png" sizes="32x32" />
       </head>
       <body className="bg-background">
-        <Providers>{children}</Providers>
+        <Providers>
+          {children} <SpeedInsights />
+        </Providers>
       </body>
     </html>
   );
